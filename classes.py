@@ -1,3 +1,4 @@
+import numpy as np
 import pygame
 from enum import Enum
 from pygame.sprite import Sprite
@@ -6,7 +7,17 @@ WIDTH = 12
 HEIGHT = 10
 
 SPRITE_SIZE = 75 # размер спрайта в пикселях
-
+"""
+действия:
+пойти вверх
+вниз
+направо
+налево
+сделать шаг
+съесть
+ничего не делать
+6
+"""
 class Directions(Enum):
     up = 1
     down = 2
@@ -35,11 +46,68 @@ class Grass(Sprite):
         self.rect.top = topPadding + self.y * SPRITE_SIZE
         self.rect.left = leftPadding + self.x * SPRITE_SIZE
 
+percept = {
+    "energy": 10,
+    "x": 10,
+    "y": 10,
+
+}
+
 class Critter:
     def __init__(self, x, y, direction=Directions.up):
         self.x = x
         self.y = y
         self.direction = direction
+
+    def action(self, percept):
+        """
+        Что - то делает по словарю восприятия percept
+        :return:
+        """
+        pass
+
+    def makePerception(self, grasses, pigs, wolfs):
+        """
+        По своим параметрам, а также по массивам с объектами
+        создает массив восприятия для нейронной сети
+        :param grasses:
+        :param pigs:
+        :param wolfs:
+        :return:
+        """
+        perception = []
+        perception.append(self.x)
+        perception.append(self.y)
+        perception.append(self.energy)
+        # добавляем информацию по траве
+        # 0 - нет в клетке, 1 - есть
+        for j in range(-2, 3):
+            for i in range(-2, 3):
+                perception.append(
+                    self.hasObjectInPoint(grasses, self.x + i, self.y + j)
+                )
+                perception.append(
+                    self.hasObjectInPoint(pigs, self.x + i, self.y + j)
+                )
+                perception.append(
+                    self.hasObjectInPoint(wolfs, self.x + i, self.y + j)
+                )
+        return perception
+
+    def hasObjectInPoint(self, objects, x, y):
+        """
+        Проверяет, есть ли среди объектов объект,
+        который занимает заданную точку
+        МОЖНО ОПТИМИЗИРОВАТЬ
+        :param objects:
+        :param x:
+        :param y:
+        :return:
+        """
+        for obj in objects:
+            if obj.x == x and obj.y == y:
+                return 1
+        0
 
     def updateRect(self, topPadding=0, leftPadding=0):
         """
