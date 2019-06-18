@@ -1,8 +1,11 @@
+from game_clases.critter import Critter
 from classes import *
 from classes import WIDTH, HEIGHT
 import pygame
 from pygame.locals import *
 import random
+from game_params import *
+
 
 WIDTHSCREEN = 1024
 HEIGHTSCREEN = 768
@@ -14,11 +17,11 @@ LEFT_MARGIN = (WIDTHSCREEN - WIDTH * SPRITE_SIZE) / 2
 class Game():
     def __init__(self):
         self.allObjects = {}
-        self.grasses = self.makeGameObjectsList(Grass, 50)
-        self.pigs = self.makeGameObjectsList(Pig, 25)
-        self.wolfs = self.makeGameObjectsList(Wolf, 10)
-        for obj in self.grasses + self.pigs + self.wolfs:
-            print(obj)
+        self.grasses = self.makeGameObjectsList(Grass, GRASSES_COUNT)
+        self.pigs = self.makeGameObjectsList(Pig, PIGS_COUNT)
+        self.wolfs = self.makeGameObjectsList(Wolf, WOLFS_COUNT)
+        # for obj in self.grasses + self.pigs + self.wolfs:
+        #     print(obj)
 
     def makeGameObjectsList(self, cls, number):
         """
@@ -32,7 +35,10 @@ class Game():
         for i in range(number):
             x = random.randrange(WIDTH)
             y = random.randrange(HEIGHT)
-            result.append(cls(x, y))
+            if cls == Grass:
+                result.append(cls(x, y))
+            else:
+                result.append(cls(x, y, self))
         return result
 
     def mainLoop(self):
@@ -46,12 +52,16 @@ class Game():
                         self.running = False
             self.screen.fill(MAINCOLOR)
 
-            #рисуем всех
+            # двигаем всех
+            for obj in self.wolfs + self.pigs:
+                obj.make_move()
+
+            # рисуем всех
             for obj in self.grasses + self.pigs + self.wolfs:
                 obj.updateRect(TOP_MARGIN, LEFT_MARGIN)
                 self.screen.blit(obj.image, obj.rect)
             pygame.display.update()
-            self.fpsClock.tick(30)
+            self.fpsClock.tick(FPS)
 
     def main(self):
         pygame.init()

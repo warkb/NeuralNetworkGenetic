@@ -38,13 +38,17 @@ class CommonNeuralNetwork():
         """
         Возвращает результат прямого распространения
         """
+        x = np.array(x)
         if len(x[0]) != len(self.layers[0]):
-            # print(f'{len(x[0])} != {len(self.layers[0])}')
+            print(f'{len(x[0])} != {len(self.layers[0])}')
             raise NotEqualArgumentsInputsException()
         result = x
         for i, layer in enumerate(self.layers):
             # print(f'x.shape=({result.shape})')
             # print(f'layer.shape={layer.shape}')
+            # print('===============================')
+            # print(result)
+            # print(layer)
             result = self.sigmoid(np.matmul(result, layer))
 
         return result
