@@ -3,13 +3,15 @@ from typing import List, Any, Union
 import pygame
 from enum import Enum
 from game_clases.Enums import Directions
+from game_clases.rendered_object import RenderedObject
 from game_params import *
 from commonNeuralNetwork.commonNN import CommonNeuralNetwork
 
-class Critter:
-    def __init__(self, x, y, game, direction=Directions.up):
-        self.x = x
-        self.y = y
+class Critter(RenderedObject):
+    def __init__(self, x, y, image_link, game, direction=Directions.up):
+        # self.x = x
+        # self.y = y
+        RenderedObject.__init__(self, x, y, image_link)
         self.game = game
         self.direction = direction
         self.initNN()
@@ -144,16 +146,6 @@ class Critter:
         self.dEnergy = dEnergy  # энергия, которую получает существо кого-то съедая
         self.priceEnergy = 1  # энергия, которая забирается за один ход
         self.energy = self.maxEnergy / 2
-
-    def initImage(self, link):
-        """
-        делает для класса изображение и прямоугольник с координатами
-        :param link:
-        :return:
-        """
-        self.image = pygame.image.load(link)
-        self.image = pygame.transform.scale(self.image, (SPRITE_SIZE, SPRITE_SIZE))
-        self.rect = self.image.get_rect()
 
     def initNN(self):
         """Инициализирует нейронную сеть"""

@@ -6,14 +6,6 @@ from pygame.locals import *
 import random
 from game_params import *
 
-
-WIDTHSCREEN = 1024
-HEIGHTSCREEN = 768
-MAINCOLOR = (21, 209, 137)
-
-TOP_MARGIN = (HEIGHTSCREEN - HEIGHT * SPRITE_SIZE) / 2
-LEFT_MARGIN = (WIDTHSCREEN - WIDTH * SPRITE_SIZE) / 2
-
 class Game():
     def __init__(self):
         self.press_keys = type('keys', (), {})() # класс, содержащий нажатые классы для контроллера
@@ -87,8 +79,7 @@ class Game():
 
             # рисуем всех
             for obj in self.grasses + self.pigs + self.wolfs:
-                obj.updateRect(TOP_MARGIN, LEFT_MARGIN)
-                self.screen.blit(obj.image, obj.rect)
+                obj.draw(self.screen)
             pygame.display.update()
             self.fpsClock.tick(FPS)
 

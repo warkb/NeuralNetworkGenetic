@@ -15,9 +15,8 @@ percept = {
 class Pig(Critter):
     max_lifetime = 0
     def __init__(self, x, y, game):
-        super().__init__(x, y, game)
+        super().__init__(x, y, 'img/pig.png', game)
         self.initEnergy(100, 10)
-        self.initImage('img/pig.png')
 
     def __str__(self):
         return 'Это Свинья с координатами (%s, %s)' % (self.x, self.y)
@@ -26,9 +25,8 @@ class Pig(Critter):
 class Wolf(Critter):
     max_lifetime = 0
     def __init__(self, x, y, game):
-        super().__init__(x, y, game)
+        super().__init__(x, y, 'img/wolf.png', game)
         self.initEnergy(100, 25)
-        self.initImage('img/wolf.png')
 
     def __str__(self):
         return 'Это Волк с координатами (%s, %s)' % (self.x, self.y)
