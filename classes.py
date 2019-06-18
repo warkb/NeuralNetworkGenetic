@@ -39,3 +39,10 @@ class Wolf(Critter):
     def __str__(self):
         return 'Это Волк с координатами (%s, %s)' % (self.x, self.y)
 
+    def eat(self):
+        pigs_for_eat = list(filter(lambda obj: True, self.game.get_objects_near(self.x, self.y).pigs))
+        if len(pigs_for_eat) > 0:
+            pig = pigs_for_eat[0]
+            self.game.remove_pig(pig)
+            self.update_energy()
+

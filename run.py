@@ -12,13 +12,19 @@ class Game():
         self.allObjects = {}
         self.grasses = self.makeGameObjectsList(Grass, GRASSES_COUNT)
         self.pigs = self.makeGameObjectsList(Pig, PIGS_COUNT)
-        player_pig = Pig(0,0, self)
-        player_pig.controller = player_pig.keyboard_controller
-        self.pigs.append(player_pig)
         self.wolfs = self.makeGameObjectsList(Wolf, WOLFS_COUNT)
+        player_wolf = Wolf(0,0, self)
+        player_wolf.controller = player_wolf.keyboard_controller
+        self.wolfs.append(player_wolf)
         # for obj in self.grasses + self.pigs + self.wolfs:
         #     print(obj)
         self.init_keys()
+
+    def remove_pig(self, pig):
+        self.pigs.remove(pig)
+
+    def remove_wolf(self, wolf):
+        self.wolfs.remove(wolf)
 
     def init_keys(self):
         self.press_keys.up = False

@@ -28,6 +28,10 @@ class Critter(RenderedObject):
         ]
         self.controller = self.neural_network_controller
 
+    def __del__(self):
+        if self.life_time > __class__.best_lifetime:
+            __class__.best_lifetime = self.life_time
+
     def neural_network_controller(self):
         """
         Управляет созданием с помощью нейронной сети
@@ -180,8 +184,8 @@ class Critter(RenderedObject):
 
     def update_energy(self):
         """Обновляет показатель энергии, если попытка съесть оказалась удачной"""
-        if self.controller == self.keyboard_controller:
-            print(self.game.get_objects_near(self.x, self.y).grasses)
+        # if self.controller == self.keyboard_controller:
+        #     print(self.game.get_objects_near(self.x, self.y).grasses)
         self.energy += self.dEnergy
         if self.energy > self.maxEnergy:
             self.energy = self.maxEnergy / 2
