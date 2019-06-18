@@ -8,6 +8,7 @@ from game_params import *
 from commonNeuralNetwork.commonNN import CommonNeuralNetwork
 
 class Critter(RenderedObject):
+    best_lifetime = 0 # самый долгий срок жизни
     def __init__(self, x, y, image_link, game, direction=Directions.up):
         # self.x = x
         # self.y = y
@@ -58,7 +59,7 @@ class Critter(RenderedObject):
             return 4
         if inputs.eat:
             return 5
-        return 5
+        return 6
 
     def set_direction_up(self):
         self.direction = Directions.up
@@ -124,17 +125,6 @@ class Critter(RenderedObject):
                 return 1
         return 0
 
-    def updateRect(self, topPadding=0, leftPadding=0):
-        """
-        обновляет прямоугольник
-        по координатам в матрице и зазорам по бокам выдает координаты на экране
-        :param topPadding:
-        :param leftPadding:
-        :return:
-        """
-        self.rect.top = topPadding + self.y * SPRITE_SIZE
-        self.rect.left = leftPadding + self.x * SPRITE_SIZE
-
     def initEnergy(self, maxEnergy, dEnergy):
         """
         Инициализирует значения связанные с энергией
@@ -186,6 +176,12 @@ class Critter(RenderedObject):
         Иначе False
         :return:
         '''
+        pass
+
+    def update_energy(self):
+        """Обновляет показатель энергии, если попытка съесть оказалась удачной"""
+        if self.controller == self.keyboard_controller:
+            print(self.game.get_objects_near(self.x, self.y).grasses)
         self.energy += self.dEnergy
         if self.energy > self.maxEnergy:
             self.energy = self.maxEnergy / 2

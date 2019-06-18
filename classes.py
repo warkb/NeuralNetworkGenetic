@@ -21,6 +21,14 @@ class Pig(Critter):
     def __str__(self):
         return 'Это Свинья с координатами (%s, %s)' % (self.x, self.y)
 
+    def eat(self):
+        grasses_for_eat = list(filter(lambda obj: obj.growed, self.game.get_objects_near(self.x, self.y).grasses))
+        if len(grasses_for_eat) > 0:
+            grass = grasses_for_eat[0]
+            grass.be_eat()
+            self.update_energy()
+
+
 
 class Wolf(Critter):
     max_lifetime = 0

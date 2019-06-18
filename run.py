@@ -83,6 +83,24 @@ class Game():
             pygame.display.update()
             self.fpsClock.tick(FPS)
 
+    def get_objects_near(self, x, y):
+        """
+        Получает объекты в квадрате 3Х3 c центром в координатах x и y
+        """
+        result = type('Near_objects', (), {})
+        result.grasses = []
+        result.pigs = []
+        result.wolfs = []
+        for obj in self.grasses + self.wolfs + self.pigs:
+            if abs(obj.x - x) < 2 and abs(obj.y - y) < 2:
+                if isinstance(obj, Grass):
+                    result.grasses.append(obj)
+                if isinstance(obj, Pig):
+                    result.pigs.append(obj)
+                if isinstance(obj, Wolf):
+                    result.wolfs.append(obj)
+        return result
+
     def main(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTHSCREEN, HEIGHTSCREEN), 0, 32)

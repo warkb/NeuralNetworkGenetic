@@ -28,5 +28,6 @@ class RenderedObject:
         :param screen:
         :return:
         """
-        self.updateRect(self.TOP_MARGIN, self.LEFT_MARGIN)
+        self.rect.top = self.TOP_MARGIN + self.y * SPRITE_SIZE
+        self.rect.left = self.LEFT_MARGIN + self.x * SPRITE_SIZE
         screen.blit(self.image, self.rect)
