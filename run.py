@@ -22,9 +22,13 @@ class Game():
 
     def remove_pig(self, pig):
         self.pigs.remove(pig)
+        pig.die()
+        del pig
 
     def remove_wolf(self, wolf):
         self.wolfs.remove(wolf)
+        wolf.die()
+        del wolf
 
     def init_keys(self):
         self.press_keys.up = False
@@ -84,8 +88,29 @@ class Game():
                 obj.make_move()
 
             # рисуем всех
+            maxPigCurrentLife = 0
+            maxWolfCurrentLife = 0
             for obj in self.grasses + self.pigs + self.wolfs:
+                if isinstance(obj, Pig):
+                    maxPigCurrentLife = max(maxPigCurrentLife, obj.life_time)
+                if isinstance(obj, Wolf):
+                    maxWolfCurrentLife = max(maxWolfCurrentLife, obj.life_time)
                 obj.draw(self.screen)
+            # рисуем разную информацию
+            maxPigLifeSurf = self.mainFont.render(
+                f'Самая живучая свинья продержалась {max(Pig.best_lifetime, maxPigCurrentLife)} ходов',
+                True, (255, 0, 0))
+            maxPigLifeRect = maxPigLifeSurf.get_rect()
+            maxPigLifeRect.topleft = (0, 0)
+
+            self.screen.blit(maxPigLifeSurf, maxPigLifeRect)
+            maxWolfLifeSurf = self.mainFont.render(
+                f'Самый живучий волк продержался {max(Wolf.best_lifetime, maxWolfCurrentLife)} ходов',
+                True, (255, 0, 0)
+            )
+            maxWolfLifeRect = maxWolfLifeSurf.get_rect()
+            maxWolfLifeRect.topleft = (0, MAIN_FONT_SIZE)
+            self.screen.blit(maxWolfLifeSurf, maxWolfLifeRect)
             pygame.display.update()
             self.fpsClock.tick(FPS)
 
@@ -109,6 +134,7 @@ class Game():
 
     def main(self):
         pygame.init()
+        self.mainFont = pygame.font.Font('resourses\\arial.ttf', MAIN_FONT_SIZE)
         self.screen = pygame.display.set_mode((WIDTHSCREEN, HEIGHTSCREEN), 0, 32)
         self.running = True
         self.fpsClock = pygame.time.Clock()

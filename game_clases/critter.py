@@ -29,6 +29,10 @@ class Critter(RenderedObject):
         self.controller = self.neural_network_controller
 
     def __del__(self):
+        pass
+
+    def die(self):
+        print('Ohh no...')
         if self.life_time > __class__.best_lifetime:
             __class__.best_lifetime = self.life_time
 
