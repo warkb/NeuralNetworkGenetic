@@ -23,7 +23,40 @@ class Critter:
             self.eat,
             lambda: None
         ]
+        self.controller = self.neural_network_controller
 
+    def neural_network_controller(self):
+        """
+        Управляет созданием с помощью нейронной сети
+        :return: индекс действия массива actions_array
+        """
+        perception = self.makePerception()
+        network_result = self.neural_network.get_result([perception])[0]
+        return list(network_result).index(max(network_result))
+
+    def keyboard_controller(self):
+        """
+        Управляет существом с помомщью клавиатуры
+        :return: индекс действия массива actions_array
+        """
+        inputs = self.game.press_keys
+        if inputs.up:
+            self.direction = Directions.up
+            return 4
+        if inputs.down:
+            self.direction = Directions.down
+            return 4
+        if inputs.left:
+            self.direction = Directions.left
+            return 4
+        if inputs.right:
+            self.direction = Directions.right
+            return 4
+        if inputs.walk:
+            return 4
+        if inputs.eat:
+            return 5
+        return 5
 
     def set_direction_up(self):
         self.direction = Directions.up
@@ -43,10 +76,8 @@ class Critter:
         :return:
         """
         self.life_time += 1
-        perception = self.makePerception()
-        network_result = self.neural_network.get_result([perception])[0]
-        # print(network_result)
-        win_index = list(network_result).index(max(network_result))
+
+        win_index = self.controller()
         self.actions_array[win_index]()
 
     def makePerception(self):

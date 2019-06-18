@@ -16,12 +16,25 @@ LEFT_MARGIN = (WIDTHSCREEN - WIDTH * SPRITE_SIZE) / 2
 
 class Game():
     def __init__(self):
+        self.press_keys = type('keys', (), {})() # класс, содержащий нажатые классы для контроллера
         self.allObjects = {}
         self.grasses = self.makeGameObjectsList(Grass, GRASSES_COUNT)
         self.pigs = self.makeGameObjectsList(Pig, PIGS_COUNT)
+        player_pig = Pig(0,0, self)
+        player_pig.controller = player_pig.keyboard_controller
+        self.pigs.append(player_pig)
         self.wolfs = self.makeGameObjectsList(Wolf, WOLFS_COUNT)
         # for obj in self.grasses + self.pigs + self.wolfs:
         #     print(obj)
+        self.init_keys()
+
+    def init_keys(self):
+        self.press_keys.up = False
+        self.press_keys.down = False
+        self.press_keys.left = False
+        self.press_keys.right = False
+        self.press_keys.walk = False
+        self.press_keys.eat = False
 
     def makeGameObjectsList(self, cls, number):
         """
@@ -43,6 +56,7 @@ class Game():
 
     def mainLoop(self):
         while self.running:
+            self.init_keys()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     # выходим по нажатию на крестик
@@ -50,6 +64,21 @@ class Game():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.running = False
+
+                    # управление
+                    if event.key == K_w:
+                        self.press_keys.up = True
+                    if event.key == K_a:
+                        self.press_keys.left = True
+                    if event.key == K_d:
+                        self.press_keys.right = True
+                    if event.key == K_s:
+                        self.press_keys.down = True
+                    if event.key == K_SPACE:
+                        self.press_keys.walk = True
+                    if event.key == K_e:
+                        self.press_keys.eat = True
+
             self.screen.fill(MAINCOLOR)
 
             # двигаем всех
