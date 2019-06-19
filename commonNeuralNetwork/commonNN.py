@@ -1,7 +1,7 @@
 # https://habr.com/ru/post/271563/
 import pickle
 import numpy as np
-
+import random as rd
 
 class NotEqualArgumentsInputsException(Exception):
     def __init__(self, text='Не совподает количество входных ячеек и аргументов'):
@@ -10,7 +10,6 @@ class NotEqualArgumentsInputsException(Exception):
 
 class CommonNeuralNetwork():
     """Класс с нейронной сетью"""
-
     def __init__(self, counts):
         """
         :parm counts: (int) - кортеж с цифрами - количество нейронов в каждом слое
@@ -100,3 +99,15 @@ class CommonNeuralNetwork():
         """
         with open(filename, 'rb') as f:
             self.layers = pickle.load(f)
+
+    def mutate(self, count=1, percent=10):
+        """
+        Меняет count весов на percent процентов
+        :param count:
+        :param percent:
+        :return: None
+        """
+        for _ in range(count):
+            lay = rd.choice(self.layers)
+            ind = rd.randrange(0, len(lay) - 1)
+            lay[ind] += rd.choice((-1,1)) * lay[ind] * percent / 100

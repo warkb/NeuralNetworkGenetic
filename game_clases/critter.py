@@ -6,17 +6,18 @@ from game_clases.Enums import Directions
 from game_clases.rendered_object import RenderedObject
 from game_params import *
 from commonNeuralNetwork.commonNN import CommonNeuralNetwork
+from copy import deepcopy
+
 
 class Critter(RenderedObject):
     best_lifetime = 0 # самый долгий срок жизни
     def __init__(self, x, y, image_link, game, direction=Directions.up):
-        # self.x = x
-        # self.y = y
         RenderedObject.__init__(self, x, y, image_link)
         self.game = game
         self.direction = direction
         self.initNN()
         self.life_time = 0  # сколько ходов прожило создание
+        self.has_child = False # может ли создание сейчас родить ребенка
         self.actions_array = [
             self.set_direction_up,
             self.set_direction_down,
@@ -87,7 +88,9 @@ class Critter(RenderedObject):
         :return:
         """
         self.life_time += 1
-
+        self.energy -= 1
+        if self.energy < 0:
+            self.game.remove_critter(self)
         win_index = self.controller()
         self.actions_array[win_index]()
 
@@ -122,7 +125,7 @@ class Critter(RenderedObject):
         """
         Проверяет, есть ли среди объектов объект,
         который занимает заданную точку
-        МОЖНО ОПТИМИЗИРОВАТЬ
+        TODO: ОПТИМИЗИРОВАТЬ
         :param objects:
         :param x:
         :param y:
@@ -186,12 +189,23 @@ class Critter(RenderedObject):
         '''
         pass
 
+    def make_child(self):
+        """
+        Рождает нового ребенка
+        :return: Critter
+        """
+        new_child = self.__class__(self.x, self.y, self.game)
+        new_child.neural_network = deepcopy(self.neural_network)
+        new_child.neural_network.mutate(5, 25)
+        return new_child
+
     def update_energy(self):
         """Обновляет показатель энергии, если попытка съесть оказалась удачной"""
         # if self.controller == self.keyboard_controller:
         #     print(self.game.get_objects_near(self.x, self.y).grasses)
         self.energy += self.dEnergy
         if self.energy > self.maxEnergy:
+            self.has_child = True
             self.energy = self.maxEnergy / 2
             return True
         return False
