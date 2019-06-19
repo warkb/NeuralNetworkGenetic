@@ -15,7 +15,7 @@ percept = {
 class Pig(Critter):
     def __init__(self, x, y, game):
         super().__init__(x, y, 'img/pig.png', game)
-        self.initEnergy(100, 10)
+        self.initEnergy(100, 2)
 
     def __str__(self):
         return 'Это Свинья с координатами (%s, %s)' % (self.x, self.y)
@@ -32,7 +32,7 @@ class Pig(Critter):
 class Wolf(Critter):
     def __init__(self, x, y, game):
         super().__init__(x, y, 'img/wolf.png', game)
-        self.initEnergy(100, 25)
+        self.initEnergy(100, 50)
 
     def __str__(self):
         return 'Это Волк с координатами (%s, %s)' % (self.x, self.y)

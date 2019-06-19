@@ -24,12 +24,14 @@ class Game():
         self.fpses = []
 
     def remove_pig(self, pig):
-        self.pigs.remove(pig)
+        if pig in self.pigs:
+            self.pigs.remove(pig)
         pig.die()
         del pig
 
     def remove_wolf(self, wolf):
-        self.wolfs.remove(wolf)
+        if wolf in self.wolfs:
+            self.wolfs.remove(wolf)
         wolf.die()
         del wolf
 
