@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import List, Any, Union
 
 import pygame
@@ -88,7 +89,7 @@ class Critter(RenderedObject):
         :return:
         """
         self.life_time += 1
-        self.energy -= 1
+        self.energy -= self.priceEnergy
         if self.energy < 0:
             self.game.remove_critter(self)
         win_index = self.controller()
@@ -165,19 +166,25 @@ class Critter(RenderedObject):
         self.neural_network = CommonNeuralNetwork((78, 78, 7))
 
     def walk(self):
+        NewPos = type('NewPos', (), {})
+        new_pos = NewPos()
+        new_pos.x = self.x
+        new_pos.y = self.y
         if self.direction == Directions.up:
             if self.y > 0:
-                self.y -= 1
+                new_pos.y -= 1
         if self.direction == Directions.down:
             if self.y < HEIGHT - 1:
-                self.y += 1
+                new_pos.y += 1
         if self.direction == Directions.left:
             if self.x > 0:
-                self.x -= 1
+                new_pos.x -= 1
         if self.direction == Directions.right:
             if self.x < WIDTH - 1:
-                self.x += 1
-
+                new_pos.x += 1
+        if self.game.is_free_cell(new_pos.x, new_pos.y):
+            self.x = new_pos.x
+            self.y = new_pos.y
         self.energy -= self.priceEnergy
 
     def eat(self):

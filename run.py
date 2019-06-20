@@ -7,6 +7,16 @@ import random
 from game_params import *
 
 class Game():
+    """
+    TODO: кароч
+    * не давать животным рожать на занятую клетку
+    * оптимизировать: сделать массив размером с поле,
+    запихивать туда ссылки на животных
+    и все проверки на занятость клетки делать через него
+    * обучение: волки должны бегать за свиньями, свиньи - убегать от волков
+    * инициализировать нейронные сети из файла
+    * сохранять нейронную сеть для того, кто больше всего отжил
+    """
     def __init__(self):
         self.press_keys = type('keys', (), {})() # класс, содержащий нажатые классы для контроллера
         self.allObjects = {}
@@ -22,6 +32,23 @@ class Game():
         self.init_keys()
         self.last_delay = 1 # для отрисовки fps
         self.fpses = []
+
+    @property
+    def all_critters(self):
+        return self.wolfs + self.pigs
+
+    def is_free_cell(self, x, y):
+        """
+        Проверяет, свободна ли клетка
+        TODO: сделать через массив
+        :param x:
+        :param y:
+        :return:
+        """
+        for obj in self.all_critters:
+            if (obj.x, obj.y) == (x, y):
+                return False
+        return True
 
     def remove_pig(self, pig):
         if pig in self.pigs:
