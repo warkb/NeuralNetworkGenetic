@@ -16,6 +16,11 @@ class Game():
     * обучение: волки должны бегать за свиньями, свиньи - убегать от волков
     * инициализировать нейронные сети из файла
     * сохранять нейронную сеть для того, кто больше всего отжил
+    * отрефакторить run.py - выделить класс Game в отдельный файл
+    и выделить логику работы с поляной
+    * вынуть классы Pig и Wolf в отдельные файлы
+    * выделить отдельный клас GameInfo с надписями
+    *
     """
     def __init__(self):
         self.press_keys = type('keys', (), {})() # класс, содержащий нажатые классы для контроллера
@@ -36,6 +41,23 @@ class Game():
     @property
     def all_critters(self):
         return self.wolfs + self.pigs
+
+    def near_cells(self, x, y):
+        """
+        Выводит список клеток, соседних с данной
+        :param x:
+        :param y:
+        :return:
+        """
+        result = []
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                newx = x + dx
+                newy = y + dy
+                norm = (0 <= newx < WIDTH) and (0 <= newy < HEIGHT)
+                if norm:
+                    result.append((newx, newy))
+        return result
 
     def is_free_cell(self, x, y):
         """
@@ -134,12 +156,19 @@ class Game():
             for obj in self.wolfs + self.pigs:
                 obj.make_move()
                 # если кто-то может родить - пусть рожает
+                posible_points_to_born = [
+                    point for point in self.near_cells(obj.x, obj.y)\
+                    if self.is_free_cell(point[0], point[1])
+                ]
+
                 if obj.has_child:
-                    new_child = obj.make_child()
-                    if isinstance(new_child, Pig):
-                        self.pigs.append(new_child)
-                    else:
-                        self.wolfs.append(new_child)
+                    if len(posible_points_to_born) > 0:
+                        new_child = obj.make_child()
+                        new_child.x, new_child.y = posible_points_to_born[0]
+                        if isinstance(new_child, Pig):
+                            self.pigs.append(new_child)
+                        else:
+                            self.wolfs.append(new_child)
 
             # рисуем всех
             maxPigCurrentLife = 0
