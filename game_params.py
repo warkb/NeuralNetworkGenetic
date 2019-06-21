@@ -1,16 +1,21 @@
+import pygame
+pygame.init()
 FPS = 5
 
-WIDTH = 12 # ширина поля в клетках
-HEIGHT = 10 # высота поля в клетках
-SPRITE_SIZE = 75 # размер спрайта в пикселях
 
-GRASSES_COUNT = 200
-PIGS_COUNT = 50
-WOLFS_COUNT = 15
+GRASSES_COUNT = 40
+PIGS_COUNT = 80
+WOLFS_COUNT = 40
 
 # экран
-WIDTHSCREEN = 1024
-HEIGHTSCREEN = 768
+WIDTHSCREEN = pygame.display.Info().current_w
+HEIGHTSCREEN = pygame.display.Info().current_h
 MAINCOLOR = (21, 209, 137)
+
+
+SPRITE_SIZE = 75 # размер спрайта в пикселях
+
+WIDTH = WIDTHSCREEN // SPRITE_SIZE # ширина поля в клетках
+HEIGHT = HEIGHTSCREEN // SPRITE_SIZE # высота поля в клетках
 
 MAIN_FONT_SIZE = 18

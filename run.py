@@ -232,9 +232,8 @@ class Game():
         return result
 
     def main(self):
-        pygame.init()
         self.mainFont = pygame.font.Font('resourses\\arial.ttf', MAIN_FONT_SIZE)
-        self.screen = pygame.display.set_mode((WIDTHSCREEN, HEIGHTSCREEN), 0, 32)
+        self.screen = pygame.display.set_mode((WIDTHSCREEN, HEIGHTSCREEN), pygame.FULLSCREEN, 32)
         self.running = True
         self.fpsClock = pygame.time.Clock()
         self.mainLoop()
