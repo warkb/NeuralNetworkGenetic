@@ -29,9 +29,9 @@ class Game():
         self.grasses = self.makeGameObjectsList(Grass, GRASSES_COUNT)
         self.pigs = self.makeGameObjectsList(Pig, PIGS_COUNT)
         self.wolfs = self.makeGameObjectsList(Wolf, WOLFS_COUNT)
-        player_wolf = Wolf(0,0, self)
-        player_wolf.controller = player_wolf.keyboard_controller
-        self.wolfs.append(player_wolf)
+        player = Pig(0,0, self)
+        player.controller = player.keyboard_controller
+        self.pigs.append(player)
         # for obj in self.grasses + self.pigs + self.wolfs:
         #     print(obj)
         self.init_keys()
