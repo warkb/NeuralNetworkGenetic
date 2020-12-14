@@ -4,8 +4,8 @@ FPS = 5
 
 
 GRASSES_COUNT = 40
-PIGS_COUNT = 80
-WOLFS_COUNT = 40
+PIGS_COUNT = 20
+WOLFS_COUNT = 10
 
 # экран
 WIDTHSCREEN = pygame.display.Info().current_w

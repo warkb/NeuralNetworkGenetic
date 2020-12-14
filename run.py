@@ -5,6 +5,12 @@ import pygame
 from pygame.locals import *
 import random
 from game_params import *
+from pprint import pprint
+from time import time
+import os
+
+
+
 
 class Game():
     """
@@ -26,7 +32,9 @@ class Game():
         self.press_keys = type('keys', (), {})() # класс, содержащий нажатые классы для контроллера
         self.allObjects = {}
         self.holded_places = []
+        random.seed(1)
         self.grasses = self.makeGameObjectsList(Grass, GRASSES_COUNT)
+        random.seed()
         self.pigs = self.makeGameObjectsList(Pig, PIGS_COUNT)
         self.wolfs = self.makeGameObjectsList(Wolf, WOLFS_COUNT)
         player = Pig(0,0, self)
@@ -127,6 +135,8 @@ class Game():
 
     def mainLoop(self):
         while self.running:
+            if len(self.wolfs) == 0:
+                self.running = False
             self.init_keys()
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -134,6 +144,8 @@ class Game():
                     self.running = False
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
+                        [pig.die() for pig in self.pigs]
+                        [wolf.die() for wolf in self.wolfs]
                         self.running = False
 
                     # управление
@@ -151,7 +163,7 @@ class Game():
                         self.press_keys.eat = True
 
             self.screen.fill(MAINCOLOR)
-
+            t1 = time()
             # двигаем всех
             for obj in self.wolfs + self.pigs:
                 obj.make_move()
@@ -169,7 +181,7 @@ class Game():
                             self.pigs.append(new_child)
                         else:
                             self.wolfs.append(new_child)
-
+            t2 = time()
             # рисуем всех
             maxPigCurrentLife = 0
             maxWolfCurrentLife = 0
@@ -211,8 +223,10 @@ class Game():
             wolfsCountRect.topleft = (0, MAIN_FONT_SIZE * 4)
             self.screen.blit(wolfsCountSurf, wolfsCountRect)
             pygame.display.update()
+            t3 = time()
+            
+            
             self.last_delay = self.fpsClock.tick(FPS)
-
     def get_objects_near(self, x, y):
         """
         Получает объекты в квадрате 3Х3 c центром в координатах x и y
@@ -239,6 +253,11 @@ class Game():
         self.mainLoop()
         print(f'Средний fps: {sum(self.fpses) / len(self.fpses)}')
 
-
+#8.673728813559322 
+# 8.612648221343873 
+# 20
+# 12 
+# 13
 if __name__ == '__main__':
-    Game().main()
+    while True:
+        Game().main()

@@ -2,6 +2,7 @@
 import pickle
 import numpy as np
 import random as rd
+import pprint
 
 class NotEqualArgumentsInputsException(Exception):
     def __init__(self, text='Не совподает количество входных ячеек и аргументов'):
@@ -22,6 +23,8 @@ class CommonNeuralNetwork():
                 break
             self.layers.append(2 * np.random.random((counts[i], counts[i + 1])) - 1)
         self.layers = tuple(self.layers)
+        self.memory = {}
+        self.usages = 0
 
     @staticmethod
     def sigmoid(x):
@@ -37,7 +40,11 @@ class CommonNeuralNetwork():
         """
         Возвращает результат прямого распространения
         """
+        self.usages += 1
         x = np.array(x)
+        xtup = tuple(x[0])
+        # if xtup in self.memory: верну когда нормально сеть обучится
+        #     return self.memory[xtup]
         if len(x[0]) != len(self.layers[0]):
             print(f'{len(x[0])} != {len(self.layers[0])}')
             raise NotEqualArgumentsInputsException()
@@ -49,10 +56,10 @@ class CommonNeuralNetwork():
             # print(result)
             # print(layer)
             result = self.sigmoid(np.matmul(result, layer))
-
+        self.memory[xtup] = result
         return result
 
-    def learn_network(self, input_array, output_array, iterations_count=1000, epsilon=0):
+    def learn_network(self, input_array, output_array, iterations_count=1000, epsilon=0.001):
         """Обучает нейронную сеть на примерах
         :param input_array: массив примеров входных значений
         :param output_array: массив примеро выходных значений

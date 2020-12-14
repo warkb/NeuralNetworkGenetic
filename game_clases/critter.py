@@ -1,6 +1,6 @@
 from collections import namedtuple
 from typing import List, Any, Union
-
+import os
 import pygame
 from enum import Enum
 from game_clases.Enums import Directions
@@ -8,7 +8,7 @@ from game_clases.rendered_object import RenderedObject
 from game_params import *
 from commonNeuralNetwork.commonNN import CommonNeuralNetwork
 from copy import deepcopy
-
+import pickle
 
 class Critter(RenderedObject):
     best_lifetime = 0 # самый долгий срок жизни
@@ -34,9 +34,12 @@ class Critter(RenderedObject):
         pass
 
     def die(self):
-        print('Ohh no...')
         if self.life_time > __class__.best_lifetime:
+            filename = self.__class__.__name__ + '.pickle'
             __class__.best_lifetime = self.life_time
+            with open(filename, 'wb') as f:
+                print(f'Я сохранился в {filename} и мне было {self.life_time}')
+                pickle.dump(self.neural_network, f)
 
     def neural_network_controller(self):
         """
@@ -72,16 +75,24 @@ class Critter(RenderedObject):
         return 6
 
     def set_direction_up(self):
-        self.direction = Directions.up
+        if self.y > 0:
+            if self.game.is_free_cell(self.x,self.y-1):
+                self.y -= 1
 
     def set_direction_down(self):
-        self.direction = Directions.down
+        if self.y < HEIGHT - 1:
+            if self.game.is_free_cell(self.x,self.y+1):
+                self.y += 1
 
     def set_direction_left(self):
-        self.direction = Directions.left
+        if self.x > 0:
+            if self.game.is_free_cell(self.x-1,self.y):
+                self.x -= 1
 
     def set_direction_right(self):
-        self.direction = Directions.right
+        if self.x < WIDTH - 1:
+            if self.game.is_free_cell(self.x+1, self.y):
+                self.x += 1
 
     def make_move(self):
         """
@@ -94,7 +105,6 @@ class Critter(RenderedObject):
             self.game.remove_critter(self)
         win_index = self.controller()
         self.actions_array[win_index]()
-
     def makePerception(self):
         """
         По своим параметрам, а также по массивам с объектами
@@ -121,7 +131,6 @@ class Critter(RenderedObject):
                     self.hasObjectInPoint(self.game.wolfs, self.x + i, self.y + j)
                 )
         return perception
-
     def hasObjectInPoint(self, objects, x, y):
         """
         Проверяет, есть ли среди объектов объект,
@@ -136,7 +145,6 @@ class Critter(RenderedObject):
             if obj.x == x and obj.y == y:
                 return 1
         return 0
-
     def initEnergy(self, maxEnergy, dEnergy):
         """
         Инициализирует значения связанные с энергией
@@ -148,7 +156,6 @@ class Critter(RenderedObject):
         self.dEnergy = dEnergy  # энергия, которую получает существо кого-то съедая
         self.priceEnergy = 1  # энергия, которая забирается за один ход
         self.energy = self.maxEnergy / 2
-
     def initNN(self):
         """Инициализирует нейронную сеть"""
         """
@@ -163,9 +170,14 @@ class Critter(RenderedObject):
         ничего не делать
         7
         """
-        self.neural_network = CommonNeuralNetwork((78, 78, 7))
-
+        filename = self.__class__.__name__ + '.pickle'
+        if not filename in os.listdir():
+            self.neural_network = CommonNeuralNetwork((78, 78, 7))
+        else:
+            with open(filename, 'rb') as f:
+                self.neural_network = pickle.load(f)
     def walk(self):
+        return
         NewPos = type('NewPos', (), {})
         new_pos = NewPos()
         new_pos.x = self.x
@@ -203,7 +215,7 @@ class Critter(RenderedObject):
         """
         new_child = self.__class__(self.x, self.y, self.game)
         new_child.neural_network = deepcopy(self.neural_network)
-        new_child.neural_network.mutate(5, 25)
+        new_child.neural_network.mutate(5000)
         return new_child
 
     def update_energy(self):
